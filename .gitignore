@@ -1,0 +1,28 @@
+.env
+/storage/uploads/*
+!/storage/uploads/.gitkeep
+/storage/logs/*
+!/storage/logs/.gitkeep
+
+__pycache__/
+.venv/
+.DS_Store
+# Private environment settings
+.env
+.env.*
+!.env.example
+
+# Python virtual environment and cache
+ai_service/venv/
+__pycache__/
+*.py[cod]
+
+# Private uploads and application data
+storage/
+uploads/
+public/uploads/
+
+# Logs and temporary files
+*.log
+.DS_Store
+Thumbs.db

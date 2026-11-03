@@ -1,0 +1,1 @@
+<footer class="site-footer"><p>Property Rental and Tenant Management System · AI-assisted deposit dispute review</p></footer><script src="<?= e(base_url('assets/js/app.js')) ?>"></script></body></html>

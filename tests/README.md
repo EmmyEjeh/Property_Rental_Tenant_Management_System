@@ -1,0 +1,1 @@
+Place automated tests here. Recommended coverage includes authentication and authorization, tenant record ownership, payment arithmetic, transaction rollback, maintenance status history, upload validation, AI recommendation review, report totals, and backup restoration.
