@@ -66,6 +66,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$ins || !$outs) dispute_fail('Upload at least one move-in image and one move-out image before analysis.');
         $dir=dirname(__DIR__,2).'/storage/uploads/disputes/'.$disputeId;
         $base=rtrim(getenv('AI_SERVICE_URL')?:'http://127.0.0.1:8001','/');
+$apiKey = getenv('AI_API_KEY') ?: '';
+if ($apiKey === '') {
+    dispute_fail('AI service API key is not configured.');
+}
         $reports=[];
         foreach ($ins as $i=>$in) {
             $out=$outs[$i] ?? $outs[0];
@@ -73,7 +77,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!is_file($inPath)||!is_file($outPath)) continue;
             $ch=curl_init($base.'/compare');
             $post=['move_in'=>new CURLFile($inPath,$in['mimeType'],'move-in-image'),'move_out'=>new CURLFile($outPath,$out['mimeType'],'move-out-image')];
-            curl_setopt_array($ch,[CURLOPT_POST=>true,CURLOPT_POSTFIELDS=>$post,CURLOPT_RETURNTRANSFER=>true,CURLOPT_CONNECTTIMEOUT=>5,CURLOPT_TIMEOUT=>90]);
+           curl_setopt_array($ch,[
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => $post,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_CONNECTTIMEOUT => 5,
+    CURLOPT_TIMEOUT => 90,
+    CURLOPT_HTTPHEADER => ['X-API-Key: '.$apiKey]
+]);
             $body=curl_exec($ch); $status=(int)curl_getinfo($ch,CURLINFO_HTTP_CODE); $curlError=curl_error($ch); curl_close($ch);
             if ($body===false || $status!==200) dispute_fail('Local vision service could not analyse the images. Start the Python service and try again. '.($curlError?:'HTTP '.$status));
             $decoded=json_decode((string)$body,true); if (!is_array($decoded)) dispute_fail('The local vision service returned an unreadable report.');
